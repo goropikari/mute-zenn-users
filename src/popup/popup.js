@@ -4,6 +4,17 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("addUserIdButton")
     .addEventListener("click", addUserId);
+  document
+    .getElementById("backupButton")
+    .addEventListener("click", backupUserIds);
+  document.getElementById("bulkImportButton").addEventListener("click", () => {
+    document.getElementById("bulkImportTextarea").style.display = "block";
+    document.getElementById("saveBulkImportButton").style.display = "block";
+  });
+  document
+    .getElementById("saveBulkImportButton")
+    .addEventListener("click", bulkImport);
+
   updateUserIdList();
 });
 
@@ -61,4 +72,45 @@ function updateUserIdList() {
       userIdList.appendChild(li);
     }
   });
+}
+
+function backupUserIds() {
+  browser.storage.local.get(storageKey, (result) => {
+    const muteUserIds = result[storageKey] || [];
+    const blob = new Blob([muteUserIds.join("\n")], {
+      type: "text/plain",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "mute_user_ids_backup.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  });
+}
+
+function bulkImport() {
+  const textarea = document.getElementById("bulkImportTextarea");
+  const userIds = textarea.value
+    .split("\n")
+    .map((id) => id.trim())
+    .filter((id) => id);
+  if (userIds.length > 0) {
+    browser.storage.local.get(storageKey, (result) => {
+      const muteUserIds = result[storageKey] || [];
+      browser.storage.local.set(
+        { [storageKey]: Array.from(new Set(muteUserIds.concat(userIds))) },
+        () => {
+          updateUserIdList();
+          textarea.style.display = "none";
+          document.getElementById("saveBulkImportButton").style.display =
+            "none";
+          textarea.value = "";
+        },
+      );
+    });
+  } else {
+    alert("No user IDs entered.");
+  }
 }

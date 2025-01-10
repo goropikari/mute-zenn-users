@@ -1,5 +1,5 @@
+const debug = false;
 const storageKey = "muteZennUserIds";
-const debug = true;
 
 (() => {
   if (location.hostname !== "zenn.dev") {
