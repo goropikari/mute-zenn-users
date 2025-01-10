@@ -1,5 +1,5 @@
 (() => {
-  if (location.hostname !== 'zenn.dev') {
+  if (location.hostname !== "zenn.dev") {
     return;
   }
   if (window.hasRun) {
@@ -7,19 +7,13 @@
   }
   window.hasRun = true;
 
-  function runRed() {
-    document.body.style.border = '5px solid red';
-  }
-
-  function runBlue() {
-    document.body.style.border = '5px solid blue';
+  function muteUser() {
+    document.body.style.border = "5px solid red";
   }
 
   browser.runtime.onMessage.addListener((message) => {
-    if (message.command === 'red') {
-      runRed();
-    } else {
-      runBlue();
+    if (message.command === "mute-user") {
+      muteUser();
     }
   });
 })();
