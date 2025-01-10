@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "web-ext": "^8.3.0"
+  },
+  "scripts": {
+    "format": "biome format --write",
+    "web-ext": "web-ext run -u https://zenn.dev"
+  }
+}
