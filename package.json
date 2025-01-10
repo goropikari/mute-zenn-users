@@ -6,6 +6,7 @@
   "scripts": {
     "format": "biome format --write",
     "lint": "biome lint --write",
-    "web-ext": "web-ext run -u https://zenn.dev"
+    "run": "web-ext run -u https://zenn.dev",
+    "build": "web-ext build"
   }
 }
