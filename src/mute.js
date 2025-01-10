@@ -1,3 +1,6 @@
+const storageKey = "muteZennUserIds";
+const debug = true;
+
 (() => {
   if (location.hostname !== "zenn.dev") {
     return;
@@ -35,28 +38,35 @@
       return;
     }
 
-    document.body.style.border = "5px solid red";
-    const muteUsers = ["goropikari"];
+    if (debug) {
+      document.body.style.border = "5px solid red";
+    }
 
-    if (articles && muteUsers) {
-      for (const article of articles) {
-        for (const muteUser of muteUsers) {
-          // Articles
-          const zennArticleRegExp = new RegExp(`/${muteUser}/articles/`);
-          if (article.innerHTML.match(zennArticleRegExp)) {
-            article.parentNode.remove();
-            console.log(`Remove ${muteUser}'s article`);
-          }
+    browser.storage.local.get(storageKey, (result) => {
+      const muteUsers = result[storageKey] || [];
 
-          // Books
-          const zennBookRegExp = new RegExp(`/${muteUser}/books/`);
-          if (article.innerHTML.match(zennBookRegExp)) {
-            article.remove();
-            console.log(`Remove ${muteUser}'s book`);
+      if (articles && muteUsers) {
+        for (const article of articles) {
+          for (const muteUser of muteUsers) {
+            // Articles
+            // 企業名義だと /{user_id}/articles ではなく /{company_id}/articles になるので、/articles/ と user_id をそれぞれ別で検索する
+            if (
+              article.innerHTML.includes("/articles/") &&
+              article.innerHTML.includes(`${muteUser}`)
+            ) {
+              article.parentNode.remove();
+              console.log(`Remove ${muteUser}'s article`);
+            }
+
+            // Books
+            if (article.innerHTML.includes(`/${muteUser}/books/`)) {
+              article.remove();
+              console.log(`Remove ${muteUser}'s book`);
+            }
           }
         }
       }
-    }
+    });
   }
 
   if (
@@ -71,7 +81,9 @@
     if (message.command === "mute-user") {
       getArticles(muteUser);
     } else {
-      document.body.style.border = "5px solid blue";
+      if (debug) {
+        document.body.style.border = "5px solid blue";
+      }
     }
   });
 })();
