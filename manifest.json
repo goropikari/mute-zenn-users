@@ -4,13 +4,21 @@
   "version": "1.0",
   "description": "Mute zenn users",
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "src/background.js"
+    ]
   },
-  "permissions": ["tabs"],
+  "permissions": [
+    "tabs"
+  ],
   "content_scripts": [
     {
-      "matches": ["*://zenn.dev/*"],
-      "js": ["mute.js"]
+      "matches": [
+        "*://zenn.dev/*"
+      ],
+      "js": [
+        "src/mute.js"
+      ]
     }
   ]
 }

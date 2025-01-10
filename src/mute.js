@@ -45,7 +45,7 @@
           const zennArticleRegExp = new RegExp(`/${muteUser}/articles/`);
           if (article.innerHTML.match(zennArticleRegExp)) {
             article.parentNode.remove();
-            console.log(`Remove ${muteUser}'s article`, location);
+            console.log(`Remove ${muteUser}'s article`);
           }
 
           // Books
